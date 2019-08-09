@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Domain.Driven.Application.Interfaces;
 using Domain.Driven.Application.ViewModels;
+using Domain.Driven.Core.Bus;
+using Domain.Driven.Domain.Commands.Student;
 using Domain.Driven.Domain.Interfaces;
 using Domain.Driven.Domain.Models;
 
@@ -20,11 +22,14 @@ namespace Domain.Driven.Application.Services
     {
         private readonly IStudentRepository _studentRepository;
         private readonly IMapper _mapper;
+        private readonly IMediatorHandler _bus;
+
         public StudentAppService(IStudentRepository studentRepository,
-            IMapper mapper)
+            IMapper mapper, IMediatorHandler bus)
         {
             _studentRepository = studentRepository;
             _mapper = mapper;
+            _bus = bus;
         }
         public async Task<IEnumerable<StudentViewModel>> GetAllAsync()
         {
@@ -36,9 +41,11 @@ namespace Domain.Driven.Application.Services
             return _mapper.Map<StudentViewModel>(await _studentRepository.GetByIdAsync(id));
         }
 
-        public async Task<StudentViewModel> AddAsync(StudentViewModel viewModel)
+        public async Task AddAsync(StudentViewModel viewModel)
         {
-            return _mapper.Map<StudentViewModel>(await _studentRepository.AddAsync(_mapper.Map<Student>(viewModel)));
+            var registerCommand = _mapper.Map<RegisterStudentCommand>(viewModel);
+            await _bus.SendCommand(registerCommand);
+            //return _mapper.Map<StudentViewModel>(await _studentRepository.AddAsync(_mapper.Map<Student>(viewModel)));
         }
 
         public async Task<bool> UpdateAsync(StudentViewModel viewModel)

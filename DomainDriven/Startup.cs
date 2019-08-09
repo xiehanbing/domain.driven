@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain.Driven.Infra.IoC;
+using Domain.Driven.Ui.Extensions;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -30,8 +33,14 @@ namespace Domain.Driven.Ui
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
-
+            //.NET Core 原生依赖注入
+            //单写一层用来添加依赖项，可以将IoC与展示层 Presentation 隔离
+            NativeInjectorBootStrapper.RegisterServices(services);
+            services.AddAutoMapperSetup();
+            //adding mediatr for domain events 
+            //领域命令、领域模型事件注入
+            //MediatR.Extensions.Microsoft.DependencyInjection
+            services.AddMediatR(typeof(Startup));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

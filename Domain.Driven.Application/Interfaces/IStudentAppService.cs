@@ -21,10 +21,26 @@ namespace Domain.Driven.Application.Interfaces
         /// <param name="id"></param>
         /// <returns></returns>
         Task<StudentViewModel> GetByIdAsync(Guid id);
+        /// <summary>
+        /// 添加 异步
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
+        Task AddAsync(StudentViewModel viewModel);
 
-        Task<StudentViewModel> AddAsync(StudentViewModel viewModel);
+         
+        /// <summary>
+        /// 更新异步
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
 
         Task<bool> UpdateAsync(StudentViewModel viewModel);
+        /// <summary>
+        /// 删除异步
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
 
         Task<bool> RemoveAsync(Guid id);
     }

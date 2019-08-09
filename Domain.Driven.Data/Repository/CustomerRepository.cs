@@ -1,4 +1,5 @@
-﻿using Domain.Driven.Domain.Interfaces;
+﻿using Domain.Driven.Data.Context;
+using Domain.Driven.Domain.Interfaces;
 using Domain.Driven.Domain.Models;
 
 namespace Domain.Driven.Data.Repository
@@ -12,6 +13,10 @@ namespace Domain.Driven.Data.Repository
         public Customer GetByEmail(string email)
         {
             throw new System.NotImplementedException();
+        }
+
+        public CustomerRepository(StudyContext context) : base(context)
+        {
         }
     }
 }
