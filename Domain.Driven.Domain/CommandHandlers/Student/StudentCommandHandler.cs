@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Domain.Driven.Core.Bus;
+using Domain.Driven.Core.Notifications;
 using Domain.Driven.Domain.Commands.Student;
+using Domain.Driven.Domain.Events;
 using Domain.Driven.Domain.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Caching.Memory;
@@ -72,7 +74,8 @@ namespace Domain.Driven.Domain.CommandHandlers.Student
                 {
                     "The customer e-mail has already been taken."
                 };
-                _cache.Set("ErrorData", errorInfo);
+                _bus.RaiseEvent(new DomainNotification("", "The customer e-mail has already been taken."));
+                //_cache.Set("ErrorData", errorInfo);
                 return Task.FromResult(new Unit());
             }
 
@@ -82,6 +85,8 @@ namespace Domain.Driven.Domain.CommandHandlers.Student
             if (Commit())
             {
                 // 提交成功后，这里需要发布领域事件 // 比如欢迎用户注册邮件呀，短信呀等 // waiting....
+                _bus.RaiseEvent(new StudentRegisteredEvent(customer.Id, customer.Name, customer.Email, customer.Phone,
+                    customer.BirthDate));
             }
             return Task.FromResult(new Unit());
         }

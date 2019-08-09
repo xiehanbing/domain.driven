@@ -38,7 +38,7 @@ namespace Domain.Driven.Data.Repository
         public void Add(TEntity entity)
         {
             DbSet.Add(entity);
-            SaveChanges();
+            //SaveChanges();
         }
         /// <summary>
         /// <see cref="IRepository{TEntity}.AddAsync(TEntity)"/>
@@ -46,7 +46,7 @@ namespace Domain.Driven.Data.Repository
         public async Task<TEntity> AddAsync(TEntity entity)
         {
             var data=(await DbSet.AddAsync(entity))?.Entity;
-            SaveChanges();
+            //SaveChanges();
             return data;
         }
         /// <summary>
@@ -55,7 +55,7 @@ namespace Domain.Driven.Data.Repository
         public void Update(TEntity entity)
         {
             DbSet.Update(entity);
-            SaveChanges();
+            //SaveChanges();
         }
         /// <summary>
         /// <see cref="IRepository{TEntity}.Remove(Guid)"/>
@@ -63,7 +63,7 @@ namespace Domain.Driven.Data.Repository
         public void Remove(Guid id)
         {
             DbSet.Remove(DbSet.Find(id));
-            SaveChanges();
+            //SaveChanges();
         }
         /// <summary>
         /// <see cref="IRepository{TEntity}.SaveChanges"/>

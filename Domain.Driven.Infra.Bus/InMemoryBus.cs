@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Domain.Driven.Core.Bus;
 using Domain.Driven.Core.Commands;
+using Domain.Driven.Core.Events;
 using MediatR;
 
 namespace Domain.Driven.Infra.Bus
@@ -26,6 +27,15 @@ namespace Domain.Driven.Infra.Bus
         public Task SendCommand<T>(T command) where T : Command
         {
             return _mediator.Send(command);//这里注意下command 对象
+        }
+        /// <summary>
+        /// 引发事件的实现方法 /// </summary>
+        /// <typeparam name="T">泛型 继承 Event：INotification</typeparam>
+        /// <param name="event">事件模型，比如StudentRegisteredEvent</param>
+        /// <returns></returns>
+        public Task RaiseEvent<T>(T @event) where T : Event
+        {
+            return _mediator.Publish(@event);
         }
     }
 }

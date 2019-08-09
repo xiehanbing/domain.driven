@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Domain.Driven.Core.Bus;
 using Domain.Driven.Core.Commands;
+using Domain.Driven.Core.Notifications;
 using Domain.Driven.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -12,7 +13,7 @@ namespace Domain.Driven.Domain.CommandHandlers
     /// 用来作为全部处理程序的基类
     /// 提供公共方法和接口数据
     /// </summary>
-    public class CommandHandler<TContext> where TContext:DbContext
+    public class CommandHandler<TContext> where TContext : DbContext
     {
         /// <summary>
         /// 注入工作单元
@@ -114,13 +115,13 @@ namespace Domain.Driven.Domain.CommandHandlers
         /// <param name="message"></param>
         protected void NotifyValidationErrors(Command message)
         {
-            List<string> errorInfo = new List<string>();
+            //List<string> errorInfo = new List<string>();
             foreach (var error in message.ValidationResult.Errors)
             {
-                errorInfo.Add(error.ErrorMessage);
-
+                //errorInfo.Add(error.ErrorMessage);
+                _bus.RaiseEvent(new DomainNotification("", error.ErrorMessage));
             } //将错误信息收集
-            _cache.Set("ErrorData", errorInfo);
+            //_cache.Set("ErrorData", errorInfo);
         }
     }
 }

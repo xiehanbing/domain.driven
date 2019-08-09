@@ -4,7 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Domain.Driven.Application.Interfaces;
 using Domain.Driven.Application.ViewModels;
+using Domain.Driven.Core.Notifications;
 using Domain.Driven.Domain.Commands.Student;
+using Domain.Driven.Domain.Notifications;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -17,10 +20,12 @@ namespace Domain.Driven.Ui.Controllers
     {
         private readonly IStudentAppService _studentAppService;
         private readonly IMemoryCache _cache;
-        public StudentController(IStudentAppService studentAppService,IMemoryCache cache)
+        private readonly DomainNotificationHandler _notifications;
+        public StudentController(IStudentAppService studentAppService, IMemoryCache cache, INotificationHandler<DomainNotification> notifications)
         {
             _studentAppService = studentAppService;
             _cache = cache;
+            _notifications = (DomainNotificationHandler)notifications;
         }
         public IActionResult Index()
         {
@@ -63,7 +68,11 @@ namespace Domain.Driven.Ui.Controllers
 
                 // 执行添加方法
                 await _studentAppService.AddAsync(studentViewModel);
-                ViewBag.Sucesso = "Student Registered!";
+                if (!_notifications.HasNotifications())
+                {
+                    ViewBag.Sucesso = "Student Registered!";
+                }
+
                 return View(studentViewModel);
             }
             catch (Exception e)
