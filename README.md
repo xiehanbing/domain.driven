@@ -13,4 +13,4 @@ domain.driven
 4.消息通知模型
 
 
-5.E
+5.EventBus
