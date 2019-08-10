@@ -12,10 +12,12 @@ namespace Domain.Driven.Infra.Bus
     public sealed class InMemoryBus : IMediatorHandler
     {
         private readonly IMediator _mediator;
-
-        public InMemoryBus(IMediator mediator)
+        private readonly IEventStoreService _eventStoreService;
+        public InMemoryBus(IMediator mediator,
+            IEventStoreService storeService)
         {
             _mediator = mediator;
+            _eventStoreService = storeService;
         }
         /// <summary>
         /// 实现我们在IMediatorHandler 定义的接口
@@ -35,6 +37,11 @@ namespace Domain.Driven.Infra.Bus
         /// <returns></returns>
         public Task RaiseEvent<T>(T @event) where T : Event
         {
+            //除了领域通知以外 的事件都保存下来
+            if (!@event.MessageType.Equals("DomainNotification"))
+            {
+                _eventStoreService?.Save(@event); //MediatR中介者模式中的第二种方法，发布 / 订阅模式
+            }
             return _mediator.Publish(@event);
         }
     }

@@ -86,7 +86,7 @@ namespace Domain.Driven.Domain.CommandHandlers.Student
             {
                 // 提交成功后，这里需要发布领域事件 // 比如欢迎用户注册邮件呀，短信呀等 // waiting....
                 _bus.RaiseEvent(new StudentRegisteredEvent(customer.Id, customer.Name, customer.Email, customer.Phone,
-                    customer.BirthDate));
+                    customer.BirthDate,request.User));
             }
             return Task.FromResult(new Unit());
         }

@@ -27,5 +27,7 @@ namespace Domain.Driven.Domain.Commands.Student
             ValidationResult = new RegisterStudentCommandValidation().Validate(this);
             return ValidationResult.IsValid;
         }
+
+        
     }
 }

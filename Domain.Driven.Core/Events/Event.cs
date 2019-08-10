@@ -7,7 +7,7 @@ namespace Domain.Driven.Core.Events
     /// 事件模型 抽象基类 继承INotification
     /// 也就是说 拥有中介者模式的 发布/订阅 模式
     /// </summary>
-    public abstract class Event:INotification
+    public abstract class Event:Message,INotification
     {
         /// <summary>
         /// 时间戳

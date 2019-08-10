@@ -54,5 +54,9 @@ namespace Domain.Driven.Application.ViewModels
         /// 编码
         /// </summary>
         public string Zip { get;  set; }
+        /// <summary>
+        /// 操作人
+        /// </summary>
+        public string  User { get; set; }
     }
 }

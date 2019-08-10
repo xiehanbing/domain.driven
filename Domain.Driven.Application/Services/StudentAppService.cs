@@ -43,6 +43,7 @@ namespace Domain.Driven.Application.Services
 
         public async Task AddAsync(StudentViewModel viewModel)
         {
+            viewModel.User = "xiehanbing";
             var registerCommand = _mapper.Map<RegisterStudentCommand>(viewModel);
             await _bus.SendCommand(registerCommand);
             //return _mapper.Map<StudentViewModel>(await _studentRepository.AddAsync(_mapper.Map<Student>(viewModel)));

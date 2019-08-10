@@ -1,15 +1,19 @@
 ﻿using Domain.Driven.Application.Interfaces;
 using Domain.Driven.Application.Services;
 using Domain.Driven.Core.Bus;
+using Domain.Driven.Core.Events;
 using Domain.Driven.Core.Notifications;
 using Domain.Driven.Data.Context;
+using Domain.Driven.Data.EventSourcing;
 using Domain.Driven.Data.Repository;
+using Domain.Driven.Data.Repository.EventSourcing;
 using Domain.Driven.Data.UoW;
 using Domain.Driven.Domain.CommandHandlers.Student;
 using Domain.Driven.Domain.Commands.Student;
 using Domain.Driven.Domain.EventHandlers.StudentEventHandlers;
 using Domain.Driven.Domain.Events;
 using Domain.Driven.Domain.Interfaces;
+using Domain.Driven.Domain.Interfaces.EventSourcing;
 using Domain.Driven.Domain.Notifications;
 using Domain.Driven.Infra.Bus;
 using MediatR;
@@ -28,7 +32,11 @@ namespace Domain.Driven.Infra.IoC
 
             services.AddScoped<IStudentRepository, StudentRepository>();
 
+            services.AddScoped<IEventStoreService, SqlEventStoreService>();
+            services.AddScoped<IEventStoreRepository,EventStoreSqlRepository>();
+
             services.AddScoped<StudyContext>();
+            services.AddScoped<EventStoreSqlContext>();
 
             services.AddScoped<IMediatorHandler, InMemoryBus>();
 

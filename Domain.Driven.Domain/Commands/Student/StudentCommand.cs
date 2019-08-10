@@ -35,5 +35,9 @@ namespace Domain.Driven.Domain.Commands.Student
         /// 地址
         /// </summary>
         public Address Address { get; set; }
+        /// <summary>
+        /// 操作人
+        /// </summary>
+        public string User { get; set; }
     }
 }
