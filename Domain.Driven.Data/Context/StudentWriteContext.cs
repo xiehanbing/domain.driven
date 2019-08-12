@@ -7,9 +7,9 @@ using Microsoft.Extensions.Configuration;
 namespace Domain.Driven.Data.Context
 {
     /// <summary>
-    /// 定义 核心子领域-学习上下文（读）
+    /// 定义 核心子领域-学习上下文(写)
     /// </summary>
-    public class StudyContext:DbContext
+    public class StudentWriteContext : DbContext
     {
         /// <summary>
         /// 学生 dbset
@@ -35,7 +35,7 @@ namespace Domain.Driven.Data.Context
                 .SetBasePath(Directory.GetCurrentDirectory()) // <== compile failing here
                 .AddJsonFile("appsettings.json")
                 .Build();
-            optionsBuilder.UseSqlServer(config.GetConnectionString(ConfigConnectionConstContext.DefaultConnection));
+            optionsBuilder.UseSqlServer(config.GetConnectionString(ConfigConnectionConstContext.WriteConnection));
             //定义要使用的数据库
             //正确的是这样，直接连接字符串即可  optionsBuilder.UseSqlServer(config.GetConnectionString("DefaultConnection"));
             //我是读取的文件内容，为了数据安全

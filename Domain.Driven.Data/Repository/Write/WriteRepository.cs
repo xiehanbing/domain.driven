@@ -13,10 +13,10 @@ namespace Domain.Driven.Data.Repository.Write
     /// <typeparam name="TEntity"></typeparam>
     public class WriteRepository<TEntity>:IWriteRepository<TEntity> where TEntity:class 
     {
-        protected readonly StudyContext Db;
+        protected readonly StudentWriteContext Db;
         protected readonly DbSet<TEntity> DbSet;
 
-        public WriteRepository(StudyContext context)
+        public WriteRepository(StudentWriteContext context)
         {
             Db = context;
             DbSet = Db.Set<TEntity>();

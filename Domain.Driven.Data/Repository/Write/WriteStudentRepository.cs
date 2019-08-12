@@ -9,7 +9,7 @@ namespace Domain.Driven.Data.Repository.Write
     /// </summary>
     public class WriteStudentRepository:WriteRepository<Student>,IWriteStudentRepository
     {
-        public WriteStudentRepository(StudyContext context) : base(context)
+        public WriteStudentRepository(StudentWriteContext context) : base(context)
         {
           
         }
