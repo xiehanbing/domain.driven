@@ -63,17 +63,16 @@ namespace Domain.Driven.Domain.CommandHandlers.Student
             }
 
             var customer = new Models.Student(Guid.NewGuid(), request.Name, request.Email, request.Phone,
-                request.BirthDate);
-            customer.Address = request.Address;
+                request.BirthDate) {Address = request.Address};
             // 判断邮箱是否存在
             // 这些业务逻辑，当然要在领域层中（领域命令处理程序中）进行处理
             if (_studentRepository.GetByEmail(customer.Email) != null)
             {
                 //这里☑错误信息进行发布 目前采用缓存形式
-                List<string> errorInfo = new List<string>()
-                {
-                    "The customer e-mail has already been taken."
-                };
+                //List<string> errorInfo = new List<string>()
+                //{
+                //    "The customer e-mail has already been taken."
+                //};
                 _bus.RaiseEvent(new DomainNotification("", "The customer e-mail has already been taken."));
                 //_cache.Set("ErrorData", errorInfo);
                 return Task.FromResult(new Unit());
@@ -98,7 +97,42 @@ namespace Domain.Driven.Domain.CommandHandlers.Student
         /// <returns></returns>
         public Task<Unit> Handle(UpdateStudentCommand request, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            //命令验证
+            if (!request.IsValid())
+            {
+                //错误信息收集
+                NotifyValidationErrors(request);
+                return Task.FromResult(new Unit());
+            }
+
+            var customer = new Models.Student(request.Id, request.Name, request.Email, request.Phone,
+                    request.BirthDate)
+                { Address = request.Address };
+            // 判断邮箱是否存在
+            // 这些业务逻辑，当然要在领域层中（领域命令处理程序中）进行处理
+            var isExist = _studentRepository.GetByEmail(customer.Email);
+            if (isExist != null&&isExist.Id!=customer.Id)
+            {
+                //这里☑错误信息进行发布 目前采用缓存形式
+                //List<string> errorInfo = new List<string>()
+                //{
+                //    "The customer e-mail has already been taken."
+                //};
+                _bus.RaiseEvent(new DomainNotification("", "The customer e-mail has already been taken."));
+                //_cache.Set("ErrorData", errorInfo);
+                return Task.FromResult(new Unit());
+            }
+
+            //持久化操作
+            _studentRepository.Update(customer);
+            //统一提交
+            if (Commit())
+            {
+                // 提交成功后，这里需要发布领域事件 // 比如欢迎用户注册邮件呀，短信呀等 // waiting....
+                _bus.RaiseEvent(new StudentUpdateEvent(customer.Id, customer.Name, customer.Email, customer.Phone,
+                    customer.BirthDate, request.User));
+            }
+            return Task.FromResult(new Unit());
         }
         /// <summary>
         /// 同上，RemoveStudentCommand 的处理方法
@@ -108,7 +142,21 @@ namespace Domain.Driven.Domain.CommandHandlers.Student
         /// <returns></returns>
         public Task<Unit> Handle(RemoveStudentCommand request, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            //命令验证
+            if (!request.IsValid())
+            {
+                //错误信息收集
+                NotifyValidationErrors(request);
+                return Task.FromResult(new Unit());
+            }
+           _studentRepository.Remove(request.Id);
+            //统一提交
+            if (Commit())
+            {
+                // 提交成功后，这里需要发布领域事件 // 比如欢迎用户注册邮件呀，短信呀等 // waiting....
+                _bus.RaiseEvent(new StudentRemoveEvent(request.Id, request.User));
+            }
+            return Task.FromResult(new Unit());
         }
     }
 }

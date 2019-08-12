@@ -3,7 +3,7 @@ using DomainCoreEvent=Domain.Driven.Core.Events;
 namespace Domain.Driven.Domain.Events
 {
     /// <summary>
-    /// 学生事件 模型
+    /// 学生事件 添加 模型
     /// </summary>
     public class StudentRegisteredEvent:DomainCoreEvent.Event
     {

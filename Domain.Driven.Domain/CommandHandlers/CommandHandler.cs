@@ -57,12 +57,13 @@ namespace Domain.Driven.Domain.CommandHandlers
         /// <param name="message"></param>
         protected void NotifyValidationErrors(Command message)
         {
-            List<string> errorInfo = new List<string>(); foreach (var error in message.ValidationResult.Errors)
+            //List<string> errorInfo = new List<string>();
+            foreach (var error in message.ValidationResult.Errors)
             {
-                errorInfo.Add(error.ErrorMessage);
-
+                //errorInfo.Add(error.ErrorMessage);
+                _bus.RaiseEvent(new DomainNotification("", error.ErrorMessage));
             } //将错误信息收集
-            _cache.Set("ErrorData", errorInfo);
+            //_cache.Set("ErrorData", errorInfo);
         }
     }
 

@@ -59,6 +59,10 @@ namespace Domain.Driven.Domain.Models
         /// </summary>
       
         public Address Address { get; set; }
+        /// <summary>
+        /// 是否删除
+        /// </summary>
+        public bool IsDeleted { get; set; }
     }
    
 }
