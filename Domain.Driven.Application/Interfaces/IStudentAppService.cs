@@ -35,13 +35,13 @@ namespace Domain.Driven.Application.Interfaces
         /// <param name="viewModel"></param>
         /// <returns></returns>
 
-        Task<bool> UpdateAsync(StudentViewModel viewModel);
+        Task UpdateAsync(StudentViewModel viewModel);
         /// <summary>
         /// 删除异步
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
 
-        Task<bool> RemoveAsync(Guid id);
+        Task RemoveAsync(Guid id);
     }
 }

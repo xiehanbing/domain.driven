@@ -7,6 +7,8 @@ using Domain.Driven.Data.Context;
 using Domain.Driven.Data.EventSourcing;
 using Domain.Driven.Data.Repository;
 using Domain.Driven.Data.Repository.EventSourcing;
+using Domain.Driven.Data.Repository.Read;
+using Domain.Driven.Data.Repository.Write;
 using Domain.Driven.Data.UoW;
 using Domain.Driven.Domain.CommandHandlers.Student;
 using Domain.Driven.Domain.Commands.Student;
@@ -14,6 +16,8 @@ using Domain.Driven.Domain.EventHandlers.StudentEventHandlers;
 using Domain.Driven.Domain.Events;
 using Domain.Driven.Domain.Interfaces;
 using Domain.Driven.Domain.Interfaces.EventSourcing;
+using Domain.Driven.Domain.Interfaces.ReadRepository;
+using Domain.Driven.Domain.Interfaces.WriteRepository;
 using Domain.Driven.Domain.Notifications;
 using Domain.Driven.Infra.Bus;
 using MediatR;
@@ -30,8 +34,8 @@ namespace Domain.Driven.Infra.IoC
         {
             services.AddScoped<IStudentAppService, StudentAppService>();
 
-            services.AddScoped<IStudentRepository, StudentRepository>();
-
+            services.AddScoped<IReadStudentRepository, ReadStudentRepository>();
+            services.AddScoped<IWriteStudentRepository, WriteStudentRepository>();
             services.AddScoped<IEventStoreService, SqlEventStoreService>();
             services.AddScoped<IEventStoreRepository,EventStoreSqlRepository>();
 

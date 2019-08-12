@@ -1,8 +1,11 @@
 ﻿using Domain.Driven.Domain.Models;
 
-namespace Domain.Driven.Domain.Interfaces
+namespace Domain.Driven.Domain.Interfaces.ReadRepository
 {
-    public interface IStudentRepository : IRepository<Student>
+    /// <summary>
+    /// 只读库
+    /// </summary>
+    public interface IReadStudentRepository : IReadRepository<Student>
     {
         /// <summary>
         /// 根据邮箱获取数据

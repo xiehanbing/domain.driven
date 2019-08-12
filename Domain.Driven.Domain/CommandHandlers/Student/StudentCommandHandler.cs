@@ -7,6 +7,8 @@ using Domain.Driven.Core.Notifications;
 using Domain.Driven.Domain.Commands.Student;
 using Domain.Driven.Domain.Events;
 using Domain.Driven.Domain.Interfaces;
+using Domain.Driven.Domain.Interfaces.ReadRepository;
+using Domain.Driven.Domain.Interfaces.WriteRepository;
 using MediatR;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -25,7 +27,11 @@ namespace Domain.Driven.Domain.CommandHandlers.Student
         /// <summary>
         /// 注入仓储接口
         /// </summary>
-        private readonly IStudentRepository _studentRepository;
+        private readonly IReadStudentRepository _readStudentRepository;
+        /// <summary>
+        /// 写库仓储接口
+        /// </summary>
+        private readonly IWriteStudentRepository _writeStudentRepository;
         /// <summary>
         /// 注入总线
         /// </summary>
@@ -34,13 +40,15 @@ namespace Domain.Driven.Domain.CommandHandlers.Student
         /// <summary>
         /// 构造函数注入
         /// </summary>
-        /// <param name="studentRepository"></param>
+        /// <param name="readStudentRepository">读库</param>
+        /// <param name="writeStudentRepository">写库</param>
         /// <param name="unitOfWork"></param>
         /// <param name="bus"></param>
         /// <param name="cache"></param>
-        public StudentCommandHandler(IStudentRepository studentRepository, IUnitOfWork unitOfWork, IMediatorHandler bus, IMemoryCache cache) : base(unitOfWork, bus, cache)
+        public StudentCommandHandler(IWriteStudentRepository writeStudentRepository, IReadStudentRepository readStudentRepository, IUnitOfWork unitOfWork, IMediatorHandler bus, IMemoryCache cache) : base(unitOfWork, bus, cache)
         {
-            _studentRepository = studentRepository;
+            _readStudentRepository = readStudentRepository;
+            _writeStudentRepository = writeStudentRepository;
             _bus = bus;
             _cache = cache;
         }
@@ -66,7 +74,7 @@ namespace Domain.Driven.Domain.CommandHandlers.Student
                 request.BirthDate) {Address = request.Address};
             // 判断邮箱是否存在
             // 这些业务逻辑，当然要在领域层中（领域命令处理程序中）进行处理
-            if (_studentRepository.GetByEmail(customer.Email) != null)
+            if (_readStudentRepository.GetByEmail(customer.Email) != null)
             {
                 //这里☑错误信息进行发布 目前采用缓存形式
                 //List<string> errorInfo = new List<string>()
@@ -79,7 +87,7 @@ namespace Domain.Driven.Domain.CommandHandlers.Student
             }
 
             //持久化操作
-            _studentRepository.Add(customer);
+            _writeStudentRepository.Add(customer);
             //统一提交
             if (Commit())
             {
@@ -110,7 +118,7 @@ namespace Domain.Driven.Domain.CommandHandlers.Student
                 { Address = request.Address };
             // 判断邮箱是否存在
             // 这些业务逻辑，当然要在领域层中（领域命令处理程序中）进行处理
-            var isExist = _studentRepository.GetByEmail(customer.Email);
+            var isExist = _readStudentRepository.GetByEmail(customer.Email);
             if (isExist != null&&isExist.Id!=customer.Id)
             {
                 //这里☑错误信息进行发布 目前采用缓存形式
@@ -124,7 +132,7 @@ namespace Domain.Driven.Domain.CommandHandlers.Student
             }
 
             //持久化操作
-            _studentRepository.Update(customer);
+            _writeStudentRepository.Update(customer);
             //统一提交
             if (Commit())
             {
@@ -149,7 +157,7 @@ namespace Domain.Driven.Domain.CommandHandlers.Student
                 NotifyValidationErrors(request);
                 return Task.FromResult(new Unit());
             }
-           _studentRepository.Remove(request.Id);
+           _writeStudentRepository.Remove(request.Id);
             //统一提交
             if (Commit())
             {

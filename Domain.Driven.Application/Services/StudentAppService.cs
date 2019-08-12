@@ -8,6 +8,8 @@ using Domain.Driven.Application.ViewModels;
 using Domain.Driven.Core.Bus;
 using Domain.Driven.Domain.Commands.Student;
 using Domain.Driven.Domain.Interfaces;
+using Domain.Driven.Domain.Interfaces.ReadRepository;
+using Domain.Driven.Domain.Interfaces.WriteRepository;
 using Domain.Driven.Domain.Models;
 
 namespace Domain.Driven.Application.Services
@@ -20,25 +22,28 @@ namespace Domain.Driven.Application.Services
     /// </summary>
     public class StudentAppService : IStudentAppService
     {
-        private readonly IStudentRepository _studentRepository;
+        private readonly IWriteStudentRepository _writeStudentRepository;
+        private readonly IReadStudentRepository _readStudentRepository;
         private readonly IMapper _mapper;
         private readonly IMediatorHandler _bus;
 
-        public StudentAppService(IStudentRepository studentRepository,
+        public StudentAppService(IWriteStudentRepository writeStudentRepository,
+            IReadStudentRepository readStudentRepository,
             IMapper mapper, IMediatorHandler bus)
         {
-            _studentRepository = studentRepository;
+            _writeStudentRepository = writeStudentRepository;
+            _readStudentRepository = readStudentRepository;
             _mapper = mapper;
             _bus = bus;
         }
         public async Task<IEnumerable<StudentViewModel>> GetAllAsync()
         {
-            return _mapper.Map<IEnumerable<StudentViewModel>>(await _studentRepository.GetAllAsync());
+            return _mapper.Map<IEnumerable<StudentViewModel>>(await _readStudentRepository.GetAllAsync());
         }
 
         public async Task<StudentViewModel> GetByIdAsync(Guid id)
         {
-            return _mapper.Map<StudentViewModel>(await _studentRepository.GetByIdAsync(id));
+            return _mapper.Map<StudentViewModel>(await _readStudentRepository.GetByIdAsync(id));
         }
 
         public async Task AddAsync(StudentViewModel viewModel)
@@ -46,19 +51,22 @@ namespace Domain.Driven.Application.Services
             viewModel.User = "xiehanbing";
             var registerCommand = _mapper.Map<RegisterStudentCommand>(viewModel);
             await _bus.SendCommand(registerCommand);
-            //return _mapper.Map<StudentViewModel>(await _studentRepository.AddAsync(_mapper.Map<Student>(viewModel)));
         }
 
-        public async Task<bool> UpdateAsync(StudentViewModel viewModel)
+        public async Task UpdateAsync(StudentViewModel viewModel)
         {
-            _studentRepository.Update(_mapper.Map<Student>(viewModel));
-            return (await _studentRepository.SaveChangesAsync()) > 0;
+            viewModel.User = "xiehanbing";
+            var updateCommand = _mapper.Map<UpdateStudentCommand>(viewModel);
+            await _bus.SendCommand(updateCommand);
         }
 
-        public async Task<bool> RemoveAsync(Guid id)
+        public async Task RemoveAsync(Guid id)
         {
-            _studentRepository.Remove(id);
-            return (await _studentRepository.SaveChangesAsync()) > 0;
+            var removeCommand =new RemoveStudentCommand(id)
+            {
+                User = "xiehanbing"
+            };
+            await _bus.SendCommand(removeCommand);
         }
     }
 }

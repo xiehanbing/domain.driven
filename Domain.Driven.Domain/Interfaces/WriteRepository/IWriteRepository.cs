@@ -1,10 +1,13 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-namespace Domain.Driven.Domain.Interfaces
+
+namespace Domain.Driven.Domain.Interfaces.WriteRepository
 {
-    public interface IRepository<TEntity>:IDisposable where TEntity:class
+    /// <summary>
+    /// 写库
+    /// </summary>
+    /// <typeparam name="TEntity"></typeparam>
+    public interface IWriteRepository<TEntity> : IDisposable where TEntity : class
     {
         /// <summary>
         /// 添加
@@ -37,28 +40,5 @@ namespace Domain.Driven.Domain.Interfaces
         /// </summary>
         /// <returns></returns>
         Task<int> SaveChangesAsync();
-        /// <summary>
-        /// 根据id 获取对象
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        TEntity GetById(Guid id);
-        /// <summary>
-        /// 根据id 获取对象
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        Task<TEntity> GetByIdAsync(Guid id);
-        /// <summary>
-        /// 获取列表
-        /// </summary>
-        /// <returns></returns>
-        IQueryable<TEntity> GetAll();
-
-        /// <summary>
-        /// 获取列表
-        /// </summary>
-        /// <returns></returns>
-        Task<IList<TEntity>> GetAllAsync();
     }
 }
