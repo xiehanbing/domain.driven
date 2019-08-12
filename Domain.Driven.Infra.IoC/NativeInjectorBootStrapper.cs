@@ -40,6 +40,7 @@ namespace Domain.Driven.Infra.IoC
             services.AddScoped<IEventStoreRepository,EventStoreSqlRepository>();
 
             services.AddScoped<StudyContext>();
+            services.AddScoped<StudentWriteContext>();
             services.AddScoped<EventStoreSqlContext>();
 
             services.AddScoped<IMediatorHandler, InMemoryBus>();
